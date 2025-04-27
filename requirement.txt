@@ -1,0 +1,7 @@
+streamlit
+requests
+sounddevice
+scipy
+groq
+python-dotenv
+numpy
