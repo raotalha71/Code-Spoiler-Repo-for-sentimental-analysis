@@ -13,7 +13,6 @@ load_dotenv()
 # 🔥 Your Groq API Key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# 🛡️ Setup Groq Client
 client = Groq(api_key=GROQ_API_KEY)
 
 # 🎤 Record Audio Function
@@ -43,16 +42,19 @@ def transcribe_with_groq(audio_path):
 
 # 🧠 Llama-3.3-70B Processing
 def process_with_llama(input_text):
-    # Replace this with the API call to your Llama model for processing the transcription
-    # Assuming you've set up the Llama model or have an API for it
-    llama_response = requests.post(
-        'https://your-llama-model-api-endpoint',  # Replace with your Llama API endpoint
-        json={"input_text": input_text}
-    )
-    if llama_response.status_code == 200:
-        return llama_response.json().get("output_text", "No output from Llama")
-    else:
-        return "Error processing with Llama."
+    try:
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that analyzes text. Provide a brief analysis of the text including key points, tone, and main ideas."},
+                {"role": "user", "content": f"Analyze this text: {input_text}"}
+            ],
+            temperature=0.7,
+            max_tokens=150,
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"Error processing with Llama: {str(e)}"
 
 # 💬 Sentiment Analysis with Groq
 def sentiment_analysis_groq(text):
@@ -149,4 +151,5 @@ if uploaded_file is not None:
         
         st.subheader("💬 Sentiment:")
         st.success(sentiment)
+
 
