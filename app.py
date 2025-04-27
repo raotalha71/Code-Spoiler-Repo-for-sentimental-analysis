@@ -43,19 +43,16 @@ def transcribe_with_groq(audio_path):
 
 # 🧠 Llama-3.3-70B Processing
 def process_with_llama(input_text):
-    try:
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant that analyzes text. Provide a brief analysis of the user's message."},
-                {"role": "user", "content": f"Analyze this text: {input_text}"}
-            ],
-            temperature=0.7,
-            max_tokens=150,
-        )
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        return f"Error processing with Llama: {str(e)}"
+    # Replace this with the API call to your Llama model for processing the transcription
+    # Assuming you've set up the Llama model or have an API for it
+    llama_response = requests.post(
+        'https://your-llama-model-api-endpoint',  # Replace with your Llama API endpoint
+        json={"input_text": input_text}
+    )
+    if llama_response.status_code == 200:
+        return llama_response.json().get("output_text", "No output from Llama")
+    else:
+        return "Error processing with Llama."
 
 # 💬 Sentiment Analysis with Groq
 def sentiment_analysis_groq(text):
@@ -83,15 +80,12 @@ st.header("🎤 Record Your Voice")
 record_col1, record_col2 = st.columns([1, 3])
 
 with record_col1:
-    record_button = st.button("🔴 Start Recording (5 sec)", disabled=not RECORD_CAPABILITY)
+    record_button = st.button("🔴 Start Recording (5 sec)")
 
 with record_col2:
-    if RECORD_CAPABILITY:
-        st.write("Click to record 5 seconds of audio using your microphone.")
-    else:
-        st.write("Recording is not available in this environment. Please use the upload option below.")
+    st.write("Click to record 5 seconds of audio using your microphone.")
 
-if record_button and RECORD_CAPABILITY:
+if record_button:
     st.info("Recording audio...")
     audio_path = record_audio()
     st.success("Recording complete!")
