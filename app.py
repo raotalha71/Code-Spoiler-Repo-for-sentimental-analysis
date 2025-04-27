@@ -83,12 +83,15 @@ st.header("🎤 Record Your Voice")
 record_col1, record_col2 = st.columns([1, 3])
 
 with record_col1:
-    record_button = st.button("🔴 Start Recording (5 sec)")
+    record_button = st.button("🔴 Start Recording (5 sec)", disabled=not RECORD_CAPABILITY)
 
 with record_col2:
-    st.write("Click to record 5 seconds of audio using your microphone.")
+    if RECORD_CAPABILITY:
+        st.write("Click to record 5 seconds of audio using your microphone.")
+    else:
+        st.write("Recording is not available in this environment. Please use the upload option below.")
 
-if record_button:
+if record_button and RECORD_CAPABILITY:
     st.info("Recording audio...")
     audio_path = record_audio()
     st.success("Recording complete!")

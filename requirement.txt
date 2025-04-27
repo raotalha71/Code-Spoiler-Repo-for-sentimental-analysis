@@ -1,7 +1,52 @@
 streamlit
 requests
-sounddevice
 scipy
-groq
 python-dotenv
-numpy
+groq
+```
+
+### 2. Modify your app.py to conditionally import sounddevice
+
+````python
+# filepath: [app.py](http://_vscodecontentref_/0)
+import streamlit as st
+import requests
+import tempfile
+import os
+from groq import Groq
+from dotenv import load_dotenv
+import scipy.io.wavfile as wavfile
+
+# Conditionally import sounddevice
+try:
+    import sounddevice as sd
+    RECORD_CAPABILITY = True
+except ImportError:
+    RECORD_CAPABILITY = False
+    st.warning("🔊 Audio recording is not available in this environment. You can still upload audio files.")
+
+# Load environment variables
+load_dotenv()
+
+# 🔥 Your Groq API Key
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    st.error("⚠️ GROQ_API_KEY not found. Please set it in .env file or in the Streamlit secrets.")
+    GROQ_API_KEY = st.secrets.get("GROQ_API_KEY", None)
+
+# 🛡️ Setup Groq Client
+client = Groq(api_key=GROQ_API_KEY)
+
+# 🎤 Record Audio Function
+def record_audio(duration=5, fs=16000):
+    if not RECORD_CAPABILITY:
+        st.error("Recording capability is not available in this environment.")
+        return None
+        
+    recording = sd.rec(int(duration * fs), samplerate=fs, channels=1)
+    sd.wait()
+    temp_wav = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+    wavfile.write(temp_wav.name, fs, recording)
+    return temp_wav.name
+
+# Rest of your code remains the same...
