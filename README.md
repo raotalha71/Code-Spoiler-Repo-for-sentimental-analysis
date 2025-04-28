@@ -29,7 +29,7 @@ Sentiment Analysis: The LLaMA-3.3-70B model analyzes the text and classifies sen
 Result Display: The application displays the transcribed text and sentiment classification
 Setup and Installation
 Clone the repository:
-git clone https://github.com/yourusername/voice-sentiment-analyzer.git
+git clone [https://github.com/raotalha71/Code-Spoiler-Repo-for-sentimental-analysis.git
 cd voice-sentiment-analyzer
 Install the required packages:
 pip install streamlit requests sounddevice scipy python-dotenv groq
